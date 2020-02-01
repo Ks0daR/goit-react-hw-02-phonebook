@@ -2,39 +2,54 @@ import React, { Component } from 'react';
 import Layout from './Layout';
 import Contacts from './Contacts';
 import uuid from 'uuid/v4';
+// import { number } from 'prop-types';
 
 export default class App extends Component {
   state = {
     contacts: [],
     name: '',
+    number: '',
   };
 
   handleSubmit = e => {
+    const { name, number } = this.state;
     e.preventDefault();
     this.setState(prevState => {
       return {
-        contacts: {
-          id: uuid(),
-          contact: this.state.name,
-        },
+        contacts: [...prevState.contacts, this.createContact(name, number)],
       };
     });
-    this.setState({ name: '' });
+    this.setState({ name: '', number: '' });
   };
 
-  handleChangeName = e => {
-    this.setState({ name: e.target.value });
+  createContact = (name, number) => {
+    return {
+      id: uuid(),
+      contact: name,
+      number: number,
+    };
+  };
+
+  handleChangeData = ({ target: { name, value } }) => {
+    this.setState({ [name]: value });
   };
 
   render() {
-    const { name, contacts } = this.state;
+    const { name, contacts, number } = this.state;
     return (
       <Layout>
         <h2>Phonebook</h2>
         <form onSubmit={this.handleSubmit}>
           <label>
             <h3>Name:</h3>
-            <input value={name} onChange={this.handleChangeName} />
+            <input value={name} name="name" onChange={this.handleChangeData} />
+            <h3>Phone number: </h3>
+            <input
+              value={number}
+              name="number"
+              onChange={this.handleChangeData}
+            />
+            <br />
             <button type="submit">Add contact</button>
           </label>
         </form>

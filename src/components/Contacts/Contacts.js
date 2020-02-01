@@ -1,12 +1,14 @@
 import React from 'react';
 
 export default function Contacts({ elements }) {
-    console.log(elements);
+  console.log(elements);
   return (
     <ul>
-      {/* {elements.map(element => {
-        return <li key={elements.id}>{element}</li>;
-      })} */}
+      {elements.map(({ id, contact, number }) => (
+        <li key={id}>
+          User name: {contact} User phone: {number}
+        </li>
+      ))}
     </ul>
   );
 }
