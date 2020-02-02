@@ -1,12 +1,15 @@
 import React from 'react';
 
-export default function Contacts({ elements }) {
+export default function Contacts({ elements, onRemoveContacts }) {
   console.log(elements);
   return (
     <ul>
-      {elements.map(({ id, contact, number }) => (
+      {elements.map(({ id, name, number }) => (
         <li key={id}>
-          User name: {contact} User phone: {number}
+          {name}: {number}
+          <button type="button" onClick={() => onRemoveContacts(id)}>
+            Delete
+          </button>
         </li>
       ))}
     </ul>

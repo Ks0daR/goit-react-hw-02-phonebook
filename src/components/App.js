@@ -1,60 +1,58 @@
 import React, { Component } from 'react';
 import Layout from './Layout';
+import InputForm from './InputForm';
 import Contacts from './Contacts';
-import uuid from 'uuid/v4';
-// import { number } from 'prop-types';
+import FilterForm from './FilterForm';
+import createContact from './utils/createContact';
 
 export default class App extends Component {
   state = {
     contacts: [],
-    name: '',
-    number: '',
+    searchQuery: '',
   };
 
-  handleSubmit = e => {
-    const { name, number } = this.state;
-    e.preventDefault();
-    this.setState(prevState => {
-      return {
-        contacts: [...prevState.contacts, this.createContact(name, number)],
-      };
+  addContacts = (name, number) =>
+    this.setState(prevState => ({
+      contacts: [...prevState.contacts, createContact(name, number)],
+    }));
+
+  handleSearchQuery = ({ target: { value } }) => {
+    this.setState({ searchQuery: value });
+  };
+
+  filteredContacts = () => {
+    const { searchQuery, contacts } = this.state;
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(searchQuery.toLowerCase()),
+    );
+  };
+
+  removeContacts = contactId => {
+    console.log(contactId);
+    this.setState(state => {
+      return { contacts: state.contacts.filter(contact => contact.id !== contactId) };
     });
-    this.setState({ name: '', number: '' });
-  };
-
-  createContact = (name, number) => {
-    return {
-      id: uuid(),
-      contact: name,
-      number: number,
-    };
-  };
-
-  handleChangeData = ({ target: { name, value } }) => {
-    this.setState({ [name]: value });
   };
 
   render() {
-    const { name, contacts, number } = this.state;
+    const { contacts, searchQuery } = this.state;
+    const visibleContacts = this.filteredContacts();
     return (
       <Layout>
-        <h2>Phonebook</h2>
-        <form onSubmit={this.handleSubmit}>
-          <label>
-            <h3>Name:</h3>
-            <input value={name} name="name" onChange={this.handleChangeData} />
-            <h3>Phone number: </h3>
-            <input
-              value={number}
-              name="number"
-              onChange={this.handleChangeData}
-            />
-            <br />
-            <button type="submit">Add contact</button>
-          </label>
-        </form>
+        <h1>Phonebook</h1>
+        <InputForm onAddContacts={this.addContacts} contacts={contacts} />
+
         <h2>Contacts</h2>
-        <Contacts elements={contacts} />
+        {contacts.length > 1 && (
+          <FilterForm
+            onSearchQuery={this.handleSearchQuery}
+            filterValue={searchQuery}
+          />
+        )}
+        <Contacts
+          elements={searchQuery.length === 0 ? contacts : visibleContacts}
+          onRemoveContacts={this.removeContacts}
+        />
       </Layout>
     );
   }
