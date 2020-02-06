@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import styles from './InputForm.module.css';
 
 export default class InputForm extends Component {
   state = {
@@ -7,11 +8,9 @@ export default class InputForm extends Component {
   };
 
   handleSubmit = e => {
-    const { name, number } = this.state;
-    this.checkedDoubleInput(name)
-      ? alert(`${name} есть в телефонной книге!`)
-      : this.props.onAddContacts(name, number);
     e.preventDefault();
+    const { name, number } = this.state;
+    this.props.onAddContacts(name, number);
 
     this.setState({ name: '', number: '' });
   };
@@ -20,25 +19,30 @@ export default class InputForm extends Component {
     this.setState({ [name]: value });
   };
 
-  checkedDoubleInput = name => {
-    return this.props.contacts.find(contact => contact.name === name);
-  };
-
   render() {
     const { name, number } = this.state;
+    console.log(styles.form);
     return (
-      <form onSubmit={this.handleSubmit}>
+      <form className={styles.form} onSubmit={this.handleSubmit}>
         <label>
           <h3>Name:</h3>
-          <input value={name} name="name" onChange={this.handleChangeData} />
+          <input
+            value={name}
+            placeholder="Enter name..."
+            name="name"
+            onChange={this.handleChangeData}
+          />
           <h3>Phone number: </h3>
           <input
             value={number}
             name="number"
             onChange={this.handleChangeData}
+            placeholder="Enter phone..."
           />
           <br />
-          <button type="submit">Add contact</button>
+          <button className={styles.submit} type="submit">
+            Add contact
+          </button>
           <br />
         </label>
       </form>

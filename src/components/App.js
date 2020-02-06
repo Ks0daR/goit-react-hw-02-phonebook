@@ -4,6 +4,7 @@ import InputForm from './InputForm';
 import Contacts from './Contacts';
 import FilterForm from './FilterForm';
 import createContact from './utils/createContact';
+import styles from './App.module.css';
 
 export default class App extends Component {
   state = {
@@ -11,10 +12,21 @@ export default class App extends Component {
     searchQuery: '',
   };
 
-  addContacts = (name, number) =>
+  addContacts = (name, number) => {
+    const checkedName = this.checkedDoubleInput(name);
+    if (checkedName) {
+      alert(`${name} есть в телефонной книге!`);
+      return;
+    }
+
     this.setState(prevState => ({
       contacts: [...prevState.contacts, createContact(name, number)],
     }));
+  };
+
+  checkedDoubleInput = name => {
+    return this.state.contacts.find(contact => contact.name === name);
+  };
 
   handleSearchQuery = ({ target: { value } }) => {
     this.setState({ searchQuery: value });
@@ -30,7 +42,9 @@ export default class App extends Component {
   removeContacts = contactId => {
     console.log(contactId);
     this.setState(state => {
-      return { contacts: state.contacts.filter(contact => contact.id !== contactId) };
+      return {
+        contacts: state.contacts.filter(contact => contact.id !== contactId),
+      };
     });
   };
 
@@ -39,10 +53,10 @@ export default class App extends Component {
     const visibleContacts = this.filteredContacts();
     return (
       <Layout>
-        <h1>Phonebook</h1>
+        <h1 className={styles.primary}>Phonebook</h1>
         <InputForm onAddContacts={this.addContacts} contacts={contacts} />
 
-        <h2>Contacts</h2>
+        <h2 className={styles.secondary}>Contacts</h2>
         {contacts.length > 1 && (
           <FilterForm
             onSearchQuery={this.handleSearchQuery}

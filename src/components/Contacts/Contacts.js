@@ -1,13 +1,17 @@
 import React from 'react';
+import styles from './Contacts.module.css';
 
 export default function Contacts({ elements, onRemoveContacts }) {
-  console.log(elements);
   return (
-    <ul>
+    <ul className={styles.list}>
       {elements.map(({ id, name, number }) => (
-        <li key={id}>
-          {name}: {number}
-          <button type="button" onClick={() => onRemoveContacts(id)}>
+        <li className={styles.listElement} key={id}>
+          {name} {number}
+          <button
+            type="button"
+            className={styles.buttonList}
+            onClick={() => onRemoveContacts(id)}
+          >
             Delete
           </button>
         </li>
